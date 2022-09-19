@@ -22,8 +22,13 @@ def convert(input: str, output: str, patternSection: list) -> None:
         questionList.append(Question(item, latestSections))
 
     outputData = ""
+
+    patternClosePre = '<span class="bl">'
+    patternClosePost = "</span>"
     for question in questionList:
-        outputData = outputData + question.toText("{{", "}}") + "\n"
+        outputData = (
+            outputData + question.toText(patternClosePre, patternClosePost) + "\n"
+        )
 
     print(outputData)
     outputFile = open(output, "w", encoding="utf-8")

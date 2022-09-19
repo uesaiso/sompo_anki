@@ -10,7 +10,7 @@ class Sections:
     @classmethod
     def update(cls, data: str, previousSections):
         pattern = previousSections.pattern
-        ls = previousSections.list
+        ls = list(previousSections.list)
         for p in pattern:
             match = re.findall(p, data)
             if match:
