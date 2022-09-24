@@ -23,8 +23,8 @@ def convert(input: str, output: str, patternSection: list) -> None:
 
     outputData = ""
 
-    patternClosePre = '<span class="bl">'
-    patternClosePost = "</span>"
+    patternClosePre = '{{'
+    patternClosePost = "}}"
     for question in questionList:
         outputData = (
             outputData + question.toText(patternClosePre, patternClosePost) + "\n"
