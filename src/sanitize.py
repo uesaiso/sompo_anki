@@ -37,7 +37,7 @@ def sanitize(text: str) -> str:
     for i in range(20):
         k = i + 1
         text = re.sub(
-            '<img[^>]*?src="../../../../images/common/maru' + str(k) + '\\.gif".*?>',
+            '<img[^>]*?src="/images/common/maru' + str(k) + '\\.gif".*?>',
             numbers[i],
             text,
         )
