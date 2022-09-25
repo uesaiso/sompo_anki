@@ -45,10 +45,19 @@ def to_output(input: str) -> str:
     return os.path.splitext(input)[0].replace("input", "output") + ".txt"
 
 
+patternSectionsList = {
+    "h": ["h1", "h2", "h3", "h4"],
+    "law": [
+        "#latTitle",
+        "._div_PartTitle",
+        "._div_ArticleCaption",
+        "._div_ArticleTitle span",
+    ],
+}
 if __name__ == "__main__":
-    patternSections = ["<h1>.*?</h1>", "<h2>.*?</h2>", "<h3>.*?</h3>", "<h4>.*?</h4>"]
     args = sys.argv
     input = args[1]
+    patternSections = patternSectionsList[args[2]]
     if os.path.isdir(input):
         for root, dirs, files in os.walk(top=input):
             for file in files:
