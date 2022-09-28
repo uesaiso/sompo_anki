@@ -2,9 +2,9 @@ from bs4 import BeautifulSoup
 
 
 class Sections:
-    def __init__(self, patternSection: list[str], ls: list[str] = None):
+    def __init__(self, patternSection: list[str], ls  = None):
         self.pattern: list[str] = patternSection
-        self.list: list[str] = ls if ls is not None else [None] * len(patternSection)
+        self.list = ls if ls is not None else [None] * len(patternSection)
 
     @classmethod
     def update(cls, data: str, previousSections):

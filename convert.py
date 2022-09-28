@@ -1,12 +1,12 @@
 import os
 import sys
+
+from src.question import Question
 from src.sanitize import sanitize
 from src.section import Sections
-from src.question import Question
 
 
 def convert(input: str, output: str, patternSection: list) -> None:
-
     inputFile = open(input, "r", encoding="utf-8")
     inputData = inputFile.read()
     inputFile.close()
