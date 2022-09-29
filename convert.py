@@ -18,17 +18,19 @@ def convert(input: str, output: str, patternSection: list) -> None:
     latestSections = Sections(patternSection)
     questionList: list[Question] = []
 
+    preClose: str = "{{"
+    postClose: str = "}}"
+    commentSelector: str = ".comment"
+
     for item in ls:
         latestSections = Sections.update(item, latestSections)
-        questionList.append(Question(item, latestSections))
+        questionList.append(Question(item, latestSections, preClose, postClose, commentSelector))
 
-    outputData = ""
+    outputData: str = ""
 
-    patternClosePre = "{{"
-    patternClosePost = "}}"
     for question in questionList:
         outputData = (
-            outputData + question.toText(patternClosePre, patternClosePost) + "\n"
+            outputData + question.toText() + "\n"
         )
 
     print(outputData)

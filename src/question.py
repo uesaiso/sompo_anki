@@ -1,45 +1,54 @@
 import re
+
+from bs4 import BeautifulSoup
 from src.section import Sections
 
 
 class Question:
-    def __init__(self, data, sections: Sections) -> None:
+    def __init__(self, data: str, sections: Sections, preClose: str, postClose: str, commentSelector: str) -> None:
         self.data = data
         self.sections = sections
+        self.preClose = preClose
+        self.postClose = postClose
+        self.commentSelector = commentSelector
 
-    def toText(self, patternClosePre, patternClosePost) -> str:
-        text = self.data
-        matches = list(re.finditer(patternClosePre + "(.*?)" + patternClosePost, text))
-        if not matches:
+    def toText(self) -> str:
+        soup = BeautifulSoup(self.data, "html.parser")
+        comment = ""
+        for e in soup.select(self.commentSelector):
+            comment += str(e.extract())
+        text = str(soup)
+
+        answers = self.__findAnswers(text)
+        if not answers:
             return ""
         else:
-            answers = [match.group(1) for match in matches]
-            answers = sorted(set(answers), key=answers.index)
-            text = self.__addSectionsToText(text, self.sections)
-            text = (
-                self.__replaceAnswer(text, answers, patternClosePre, patternClosePost)
-                + "\t"
-            )
+            text = self.__addSectionsToText(text)
+            text = self.__addNumberToAnswers(text, answers)
+            return text + "\t" + comment + "\t"
 
-            return text
+    def __findAnswers(self, text: str) -> list[str]:
+        matches = list(re.finditer(self.preClose + "(.*?)" + self.postClose, text))
+        answers = [match.group(1) for match in matches]
+        answers = sorted(set(answers), key=answers.index)
+        return answers
 
-    def __addSectionsToText(self, text: str, sections: Sections) -> str:
-        for section in reversed(sections.list):
+
+    def __addSectionsToText(self, text: str) -> str:
+        for section in reversed(self.sections.list):
             if section and not section in text:
                 text = section + text
         return text
 
-    def __replaceAnswer(
-        self, text: str, answers: list, patternClosePre, patternClosePost
+    def __addNumberToAnswers(
+        self, text: str, answers: list
     ):
-        answers = [answer.replace("(", "\\(").replace(")", "\\)") for answer in answers]
+        answers = [answer for answer in answers]
         for answer in answers:
             i = answers.index(answer)
-            escapedAnswer = answer.replace("(", "\\(")
-            escapedAnswer = escapedAnswer.replace(")", "\\)")
             text = re.sub(
-                patternClosePre + answer + patternClosePost,
-                "{{c" + str(i + 1) + "::" + escapedAnswer + "}}",
+                self.preClose + answer + self.postClose,
+                "{{c" + str(i + 1) + "::" + answer + "}}",
                 text,
             )
         return text
